@@ -88,9 +88,8 @@ function check_steam_id($id)
 	return false;
 }
 
-function get_steam_username($id)
+function get_steam_profile($id)
 {
-  $apikey = '6F640B29184C9FE8394A82EEAEFC9A8B';  //how tf do I store this securely???
   $steamid = 76561198118290580; //get the steamid from wherever else it's needed
   $url = "https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=6F640B29184C9FE8394A82EEAEFC9A8B&steamids=$id";
 
@@ -98,6 +97,9 @@ function get_steam_username($id)
 
   $profileDecode = json_decode($profileData);
   //var_dump($profileDecode);
+
+  $profileArray = array('username'=>NULL, 'avatar'=>NULL);
+
   foreach($profileDecode as $response=>$obj1)
   {
     foreach($obj1 as $players=>$obj2)
@@ -109,45 +111,27 @@ function get_steam_username($id)
                 if($param == 'personaname' && $passedVal != NULL)
                 {
                   echo "Given username is valid, returning true".PHP_EOL;
-                  return $passedVal;
+                  $profileArray['username'] = $passedVal;
+                }
+                if($param == 'avatarmedium' && $passedVal != NULL)
+                {
+                  echo "Given avatar url is valid, returning true".PHP_EOL;  
+                  $profileArray['avatar'] = $passedVal;
                 }
             }
         }
     }
   }
-  echo "Given username is invalid or inaccessible, user error".PHP_EOL;
-	return false;
+
+if(is_null($profileArray['username']) || is_null($profileArray['avatar']) ){
+  echo "Missing username or avatar data".PHP_EOL;
+  return false;
+}
+else{
+  echo "Username and Avatar valid".PHP_EOL;
+  return $profileArray
 }
 
-function get_steam_avatar($id)
-  {
-    $apikey = '6F640B29184C9FE8394A82EEAEFC9A8B';  //how tf do I store this securely???
-    $steamid = 76561198118290580; //get the steamid from wherever else it's needed
-    $url = "https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=6F640B29184C9FE8394A82EEAEFC9A8B&steamids=$id";
-  
-    $profileData= callAPI($url);
-  
-    $profileDecode = json_decode($profileData);
-    //var_dump($profileDecode);
-    foreach($profileDecode as $response=>$obj1)
-    {
-      foreach($obj1 as $players=>$obj2)
-      {
-          foreach($obj2 as $hidden=>$obj3)
-          {
-              foreach($obj3 as $param=>$passedVal)
-              {
-                  if($param == 'avatarmedium' && $passedVal != NULL)
-                  {
-                    echo "Given avatar url is valid, returning true".PHP_EOL;
-                    return $passedVal;
-                  }
-              }
-          }
-      }
-    }
-    echo "Given avatar url is invalid or inaccessible, id error".PHP_EOL;
-    return false;
 }
 
 
@@ -259,10 +243,8 @@ function requestProcessor($request)
   {
 	  case "check_steam_id":
 	    return check_steam_id($request['id']);
-    case "get_steam_username":
-      return get_steam_username($request['id']);
-    case "get_steam_avatar":
-      return get_steam_avatar($request['id']);
+    case "get_steam_profile":
+      return get_steam_profile($request['id']);
     case "get_user_library":
       return get_user_library($request['id']);
     case "get_app_info":
