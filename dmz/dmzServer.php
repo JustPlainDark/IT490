@@ -58,7 +58,6 @@ function callAPI($url)
 
 function check_steam_id($id)
 {
-  $apikey = '6F640B29184C9FE8394A82EEAEFC9A8B';  //how tf do I store this securely???
   $steamid = 76561198118290580; //get the steamid from wherever else it's needed
   $url = "https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=6F640B29184C9FE8394A82EEAEFC9A8B&steamids=$id";
 
@@ -129,7 +128,7 @@ if(is_null($profileArray['username']) || is_null($profileArray['avatar']) ){
 }
 else{
   echo "Username and Avatar valid".PHP_EOL;
-  return $profileArray
+  return $profileArray;
 }
 
 }
@@ -137,38 +136,58 @@ else{
 
 function get_user_library($id)
 {
-  $apikey = '6F640B29184C9FE8394A82EEAEFC9A8B';  //how tf do I store this securely???
-  $steamid = 76561198118290580; //get the steamid from wherever else it's needed
-  $url = "https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/?key=6F640B29184C9FE8394A82EEAEFC9A8B&include_played_free_games=true&include_free_sub=true&steamid=$id";
+  $url = "https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/?key=6F640B29184C9FE8394A82EEAEFC9A8B&include_appinfo=true&include_played_free_games=true&steamid=$id";
 
   $appidArray = array();
 
-  $profileData= callAPI($url);
+  $libraryData= callAPI($url);
 
-  $profileDecode = json_decode($profileData);
-  //var_dump($profileDecode);
-  foreach($profileDecode as $response=>$obj1)
+  $libraryDecode = json_decode($libraryData);
+    //var_dump($libraryDecode);
+  $libraryArray = array();
+  foreach($libraryDecode as $response=>$obj1)
   {
-    foreach($obj1 as $games=>$obj2)
-    {
-        foreach($obj2 as $gameIndex=>$obj3)
-        {
-          if($param == 'appid' && $passedVal != NULL)
+      foreach($obj1 as $games=>$obj2)
+      {
+          if($games == 'games')
           {
-            $appidArray[] = $passedVal;
+              foreach($obj2 as $gameIndex=>$obj3)
+              {
+                  $libraryArray[$gameIndex] = array(
+                      'appid'=>NULL,
+                      'name'=>NULL,
+                      'playtime'=>NULL
+                  );
+                  foreach($obj3 as $keyName=>$passedVal)
+                  {
+                      if($keyName == 'appid' && $passedVal != NULL)
+                      {
+                          //echo "AppId valid".PHP_EOL;
+                          $libraryArray[$gameIndex]['appid'] = $passedVal;
+                      }
+                      if($keyName == 'name' && $passedVal != NULL)
+                      {
+                          //echo "Name Exists".PHP_EOL;
+                          $libraryArray[$gameIndex]['name'] = $passedVal;
+                      }
+                      if($keyName == 'playtime_forever' && $passedVal != NULL)
+                      {
+                          //echo "This game has been played".PHP_EOL;
+                          $libraryArray[$gameIndex]['playtime'] = $passedVal;
+                      }
+                  }
+              }
           }
-        }
-    }
+      }
   }
 
-  if(empty($appidArray))
+  if(empty($libraryArray))
   {
-    echo "Library was empty or for loop malformed, error.".PHP_EOL;
+    echo "Library Array Empty".PHP_EOL;
     return false;
   }
-
   echo "Given library was populated, returning array".PHP_EOL;
-	return $appidArray;
+	return $libraryArray;
 }
 
 function get_app_info($id)
@@ -179,8 +198,6 @@ function get_app_info($id)
 
 function get_app_news($appId)
 {
-  $apikey = '6F640B29184C9FE8394A82EEAEFC9A8B';  //how tf do I store this securely???
-  $steamid = 76561198118290580; //get the steamid from wherever else it's needed
   $url = "https://api.steampowered.com/ISteamNews/GetNewsForApp/v2/?key=6F640B29184C9FE8394A82EEAEFC9A8B&appid=$appId&count=1";
 
   $newsArray = array();
