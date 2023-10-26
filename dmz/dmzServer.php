@@ -236,10 +236,10 @@ function get_app_news($appId)
 
   if(empty($newsArray))
     {
-      echo "Library Array Empty".PHP_EOL;
+      echo "News Array Empty".PHP_EOL;
       return false;
     }
-  echo "Given library was populated, returning array".PHP_EOL;
+  echo "Given news data was populated, returning array".PHP_EOL;
   return $newsArray;
 }
 
