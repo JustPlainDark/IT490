@@ -138,8 +138,6 @@ function get_user_library($id)
 {
   $url = "https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/?key=6F640B29184C9FE8394A82EEAEFC9A8B&include_appinfo=true&include_played_free_games=true&steamid=$id";
 
-  $appidArray = array();
-
   $libraryData= callAPI($url);
 
   $libraryDecode = json_decode($libraryData);
@@ -198,51 +196,51 @@ function get_app_info($id)
 
 function get_app_news($appId)
 {
-  $url = "https://api.steampowered.com/ISteamNews/GetNewsForApp/v2/?key=6F640B29184C9FE8394A82EEAEFC9A8B&appid=$appId&count=1";
+  $url = "https://api.steampowered.com/ISteamNews/GetNewsForApp/v2/?appid=$appId&count=8&feeds=steam_community_announcements,PCGamesN,";
 
+  $newsData= callAPI($url);
+
+  $newsDecode = json_decode($newsData);
+  //var_dump($newsDecode);
   $newsArray = array();
-
-  $newsTitle;
-  $newsAuthor;
-  $newsContent;
-
-  $profileData= callAPI($url);
-
-  $profileDecode = json_decode($profileData);
-  //var_dump($profileDecode);
-  foreach($profileDecode as $appnews=>$obj1)
+  foreach($newsDecode as $appnews=>$obj1)
   {
-    foreach($obj1 as $newsitems=>$obj2)
-    {
-        foreach($obj2 as $gameIndex=>$obj3)
-        {
-          if($param == 'title' && $passedVal != NULL)
+      foreach($obj1 as $newsitems=>$obj2)
+      {
+          if($newsitems == 'newsitems')
           {
-            $newsTitle = $passedVal;
-            $newsArray[] = $newsTitle;
+              foreach($obj2 as $newsIndex=>$obj3)
+              {
+                  $newsArray[$newsIndex] = array(
+                      'title'=>NULL,
+                      'link'=>NULL,
+                      'author'=>NULL
+                  );
+                  foreach($obj3 as $newsKey=>$newsValue)
+                  {
+                      if($newsKey == 'title' && $newsValue != NULL){
+                          $newsArray[$newsIndex]['title'] = $newsValue;
+                      }
+                      if($newsKey == 'url' && $newsValue != NULL){
+                          $newsArray[$newsIndex]['link'] = $newsValue;
+                      }
+                      if($newsKey == 'feedlabel' && $newsValue != NULL){
+                          $newsArray[$newsIndex]['author'] = $newsValue;
+                      }
+                  }
+              }
           }
-          else if($param == 'author' && $passedVal != NULL)
-          {
-            $newsAuthor = $passedVal;
-            $newsArray[] = $newsAuthor;
-          }
-          else if($param == 'contents' && $passedVal != NULL)
-          {
-            $newsContent = $passedVal;
-            $newsArray[] = $newsContent;
-          }
-        }
-    }
+      }
   }
+  //var_dump($newsArray);
 
   if(empty($newsArray))
-  {
-    echo "News array empty, malformed for loop or bad appId".PHP_EOL;
-    return false;
-  }
-
+    {
+      echo "Library Array Empty".PHP_EOL;
+      return false;
+    }
   echo "Given library was populated, returning array".PHP_EOL;
-	return $newsArray;
+  return $newsArray;
 }
 
 
