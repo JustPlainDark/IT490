@@ -190,13 +190,25 @@ function get_user_library($id)
 
 function get_app_info($id)
 {
-  //Acquire info and tags, Not implemented
-	return false;
+  $url = "https://steamspy.com/api.php?request=appdetails&appid=$id";
+
+  $appInfo= callAPI($url);
+
+  $appDecode = json_decode($appInfo);
+  //var_dump($appDecode);
+  $appArray = array();
+
+
+  foreach($appDecode as $key=>$value)
+  {
+      //insert data here
+      
+  }
 }
 
 function get_app_news($appId)
 {
-  $url = "https://api.steampowered.com/ISteamNews/GetNewsForApp/v2/?appid=$appId&count=8&feeds=steam_community_announcements,PCGamesN,";
+  $url = "https://api.steampowered.com/ISteamNews/GetNewsForApp/v2/?appid=$appId&count=8&feeds=steam_community_announcements,PCGamesN";
 
   $newsData= callAPI($url);
 
@@ -243,6 +255,55 @@ function get_app_news($appId)
   return $newsArray;
 }
 
+function getTop100()
+{
+  $gameData = callAPI($url);
+  $dataDecode = json_decode($gameData, true);
+
+  $gamesArray = array();
+  $increment = 0;
+  foreach ($dataDecode as $dataName=>$dataValue)
+  {
+      $gamesArray[$increment] = array(
+          'appid'=>NULL,
+          'name'=>NULL,
+          'developer'=>NULL,
+          'price'=>NULL
+      );
+      $increment++;
+      foreach($dataValue as $key=>$value)
+      {
+          if($key == 'appid')
+          {
+              $gamesArray[$increment]['appid'] = $value;
+              //array_push($steamid, $value);
+          }
+          if($key == 'name')
+          {
+              $gamesArray[$increment]['name'] = $value;
+              //array_push($name, $value);
+          }
+          if($key == 'developer')
+          {
+              $gamesArray[$increment]['developer'] = $value;
+              //array_push($developer, $value);
+          }
+          if($key == 'price')
+          {
+              $gamesArray[$increment]['price'] = $value;
+              //array_push($price, $value);
+          }
+      }
+  }
+
+  if(empty($gamesArray))
+    {
+      echo "Game Array Empty".PHP_EOL;
+      return false;
+    }
+  echo "Given games data was populated, returning array".PHP_EOL;
+  return $gamesArray;
+}
 
 function requestProcessor($request)
 {
