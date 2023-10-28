@@ -196,14 +196,51 @@ function get_app_info($id)
 
   $appDecode = json_decode($appInfo);
   //var_dump($appDecode);
-  $appArray = array();
-
+  $appArray = array(
+      'appid'=>NULL,
+      'name'=>NULL,
+      'developer'=>NULL,
+      'price'=>NULL,
+      'genre'=>NULL,
+      'tags'=>NULL
+  );
 
   foreach($appDecode as $key=>$value)
   {
-      //insert data here
-      
+      switch($key)
+      {
+          case 'appid':
+              $appArray['appid'] = $value;
+              break;
+          case 'name':
+              $appArray['name'] = $value;
+              break;
+          case 'developer':
+              $appArray['developer'] = $value;
+              break;
+          case 'price':
+              $appArray['price'] = $value;
+              break;
+          case 'genre':
+              $appArray['genre'] = $value;
+              break;
+          case 'tags':
+              $appArray['tags'] = array();
+              foreach($value as $tag=>$amount){
+                  if(count($appArray['tags']) < 5){
+                      array_push($appArray['tags'], $tag);
+                  }
+              }
+              break;        
+      }
   }
+  if(empty($appArray))
+    {
+      echo "App Array Empty".PHP_EOL;
+      return false;
+    }
+  echo "Given app data was populated, returning array".PHP_EOL;
+  return $appArray;
 }
 
 function get_app_news($appId)
@@ -257,6 +294,7 @@ function get_app_news($appId)
 
 function getTop100()
 {
+  $url = 'https://steamspy.com/api.php?request=top100in2weeks';
   $gameData = callAPI($url);
   $dataDecode = json_decode($gameData, true);
 
