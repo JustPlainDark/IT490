@@ -58,7 +58,6 @@ function callAPI($url)
 
 function check_steam_id($id)
 {
-  $steamid = 76561198118290580; //get the steamid from wherever else it's needed
   $url = "https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=6F640B29184C9FE8394A82EEAEFC9A8B&steamids=$id";
 
   $profileData= callAPI($url);
@@ -89,7 +88,6 @@ function check_steam_id($id)
 
 function get_steam_profile($id)
 {
-  $steamid = 76561198118290580; //get the steamid from wherever else it's needed
   $url = "https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=6F640B29184C9FE8394A82EEAEFC9A8B&steamids=$id";
 
   $profileData= callAPI($url);
@@ -97,7 +95,7 @@ function get_steam_profile($id)
   $profileDecode = json_decode($profileData);
   //var_dump($profileDecode);
 
-  $profileArray = array('username'=>NULL, 'avatar'=>NULL);
+  $profileArray = array('username'=>NULL, 'avatar'=>NULL, 'library'=>NULL);
 
   foreach($profileDecode as $response=>$obj1)
   {
@@ -122,14 +120,16 @@ function get_steam_profile($id)
     }
   }
 
-if(is_null($profileArray['username']) || is_null($profileArray['avatar']) ){
-  echo "Missing username or avatar data".PHP_EOL;
-  return false;
-}
-else{
-  echo "Username and Avatar valid".PHP_EOL;
-  return $profileArray;
-}
+  $profileArray['library'] = get_user_library($id);
+
+  if(is_null($profileArray['username']) || is_null($profileArray['avatar']) ){
+    echo "Missing username or avatar data".PHP_EOL;
+    return false;
+  }
+  else{
+    echo "Username and Avatar valid".PHP_EOL;
+    return $profileArray;
+  }
 
 }
 
