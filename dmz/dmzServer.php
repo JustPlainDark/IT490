@@ -108,11 +108,13 @@ function get_steam_profile($id)
                 if($param == 'personaname' && $passedVal != NULL)
                 {
                   echo "Given username is valid, returning true".PHP_EOL;
+                  echo "Username: ", $passedVal.PHP_EOL;
                   $profileArray['username'] = $passedVal;
                 }
                 if($param == 'avatarmedium' && $passedVal != NULL)
                 {
                   echo "Given avatar url is valid, returning true".PHP_EOL;  
+                  echo "Avatar Link: ", $passedVal.PHP_EOL;
                   $profileArray['avatar'] = $passedVal;
                 }
             }
@@ -168,7 +170,7 @@ function get_user_library($id)
                           //echo "Name Exists".PHP_EOL;
                           $libraryArray[$gameIndex]['name'] = $passedVal;
                       }
-                      if($keyName == 'playtime_forever' && $passedVal != NULL)
+                      if($keyName == 'playtime_forever')
                       {
                           //echo "This game has been played".PHP_EOL;
                           $libraryArray[$gameIndex]['playtime'] = $passedVal;
@@ -188,98 +190,113 @@ function get_user_library($id)
 	return $libraryArray;
 }
 
-function get_app_info($id)
+function get_app_info($ids)
 {
-  $url = "https://steamspy.com/api.php?request=appdetails&appid=$id";
-
-  $appInfo= callAPI($url);
-
-  $appDecode = json_decode($appInfo);
-  //var_dump($appDecode);
-  $appArray = array(
-      'appid'=>NULL,
-      'name'=>NULL,
-      'developer'=>NULL,
-      'price'=>NULL,
-      'genre'=>NULL,
-      'tags'=>NULL
-  );
-
-  foreach($appDecode as $key=>$value)
+  $appsArray = array();
+  $index = 0;
+  foreach ($ids as $id)
   {
-      switch($key)
+      $appsArray[$index] = array(
+          'appid'=>NULL,
+          'name'=>NULL,
+          'developer'=>NULL,
+          'price'=>NULL,
+          'genre'=>NULL,
+          'tags'=>NULL
+      );
+      $url = "https://steamspy.com/api.php?request=appdetails&appid=$id";
+
+      $appInfo= callAPI($url);
+
+      $appDecode = json_decode($appInfo);
+      //var_dump($appDecode);
+
+      foreach($appDecode as $key=>$value)
       {
-          case 'appid':
-              $appArray['appid'] = $value;
-              break;
-          case 'name':
-              $appArray['name'] = $value;
-              break;
-          case 'developer':
-              $appArray['developer'] = $value;
-              break;
-          case 'price':
-              $appArray['price'] = $value;
-              break;
-          case 'genre':
-              $appArray['genre'] = $value;
-              break;
-          case 'tags':
-              $appArray['tags'] = array();
-              foreach($value as $tag=>$amount){
-                  if(count($appArray['tags']) < 5){
-                      array_push($appArray['tags'], $tag);
+          switch($key)
+          {
+              case 'appid':
+                  $appsArray[$index]['appid'] = $value;
+                  break;
+              case 'name':
+                  $appsArray[$index]['name'] = $value;
+                  break;
+              case 'developer':
+                  $appsArray[$index]['developer'] = $value;
+                  break;
+              case 'price':
+                  $appsArray[$index]['price'] = $value;
+                  break;
+              case 'genre':
+                  $appsArray[$index]['genre'] = $value;
+                  break;
+              case 'tags':
+                  $appsArray[$index]['tags'] = array();
+                  foreach($value as $tag=>$amount){
+                      if(count($appsArray[$index]['tags']) < 5){
+                          array_push($appsArray[$index]['tags'], $tag);
+                      }
                   }
-              }
-              break;        
+                  $appsArray[$index]['tags'] = json_encode($appsArray[$index]['tags']);
+                  break;        
+          }
       }
+      $index++;    
   }
-  if(empty($appArray))
+
+  if(empty($appsArray))
     {
       echo "App Array Empty".PHP_EOL;
       return false;
     }
   echo "Given app data was populated, returning array".PHP_EOL;
-  return $appArray;
+  return $appsArray;
 }
 
-function get_app_news($appId)
+function get_app_news($ids)
 {
-  $url = "https://api.steampowered.com/ISteamNews/GetNewsForApp/v2/?appid=$appId&count=8&feeds=steam_community_announcements,PCGamesN";
-
-  $newsData= callAPI($url);
-
-  $newsDecode = json_decode($newsData);
-  //var_dump($newsDecode);
   $newsArray = array();
-  foreach($newsDecode as $appnews=>$obj1)
+  $index = 0;
+  foreach ($ids as $id)
   {
-      foreach($obj1 as $newsitems=>$obj2)
+      $url = "https://api.steampowered.com/ISteamNews/GetNewsForApp/v2/?appid=$id&count=1&feeds=steam_community_announcements,PCGamesN";
+
+      $newsData= callAPI($url);
+
+      $newsDecode = json_decode($newsData);
+      //var_dump($newsDecode);
+      //$newsArray[$index] = array();
+      foreach($newsDecode as $appnews=>$obj1)
       {
-          if($newsitems == 'newsitems')
+          foreach($obj1 as $newsitems=>$obj2)
           {
-              foreach($obj2 as $newsIndex=>$obj3)
+              if($newsitems == 'newsitems')
               {
-                  $newsArray[$newsIndex] = array(
-                      'title'=>NULL,
-                      'link'=>NULL,
-                      'author'=>NULL
-                  );
-                  foreach($obj3 as $newsKey=>$newsValue)
+                  foreach($obj2 as $newsIndex=>$obj3)
                   {
-                      if($newsKey == 'title' && $newsValue != NULL){
-                          $newsArray[$newsIndex]['title'] = $newsValue;
-                      }
-                      if($newsKey == 'url' && $newsValue != NULL){
-                          $newsArray[$newsIndex]['link'] = $newsValue;
-                      }
-                      if($newsKey == 'feedlabel' && $newsValue != NULL){
-                          $newsArray[$newsIndex]['author'] = $newsValue;
+                      $newsArray[$index] = array(
+                          'appid'=>$id,
+                          'title'=>NULL,
+                          'link'=>NULL,
+                          'author'=>NULL
+                      );
+                      foreach($obj3 as $newsKey=>$newsValue)
+                      {
+                          if($newsKey == 'title' && $newsValue != NULL){
+                              $newsArray[$index]['title'] = $newsValue;
+                          }
+                          if($newsKey == 'url' && $newsValue != NULL){
+                              $newsArray[$index]['link'] = $newsValue;
+                          }
+                          if($newsKey == 'feedlabel' && $newsValue != NULL){
+                              $newsArray[$index]['author'] = $newsValue;
+                          }
                       }
                   }
               }
           }
       }
+      $index++;
   }
   //var_dump($newsArray);
 
@@ -362,9 +379,9 @@ function requestProcessor($request)
     case "get_user_library":
       return get_user_library($request['id']);
     case "get_app_info":
-      return get_app_info($request['id']);
+      return get_app_info($request['ids']);
     case "get_app_news":
-      return get_app_news($request['id']);
+      return get_app_news($request['ids']);
     //case "get_game_news":
       //return get_game_news:($request[])
       //return a collection of news information based on passed in array of idays
