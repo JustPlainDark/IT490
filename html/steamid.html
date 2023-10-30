@@ -1,0 +1,47 @@
+<html>
+    <head>
+        <title> Sending Steam ID to DB</title>
+        <!-- link to css stylesheet, has all the formatting--> 
+		<link rel="stylesheet" href="../css/steamid.css">
+	
+    </head>
+
+    <body>
+
+		<div class="navigationbar">
+            <a href="index.html">Welcome</a>
+            <a class="active" href="steamid.html">SteamID</a>
+            <a href="profile.php">Steam Profile</a>
+			<a href="news.php">Game News</a>
+
+
+			<div class="logout">
+                <form method="POST" action="/html/loginbase.php">
+                    <div class="logoutarea">
+                        <input type="submit" name="logoutbutton" class="button" value="Log Out">
+                    </div>
+                </form>
+            </div>
+
+          </div>
+		
+		<form method="POST" action="steamidbase.php">
+
+	
+		<div class="entireform">
+				<input id="tab-1" type="radio" name="option" class="enteroption" checked>
+				<label for="tab-1" class="anoption">Enter Steam ID</label>
+
+					<div class="entersteamidcard">
+						<div class="areaofuserinfo">
+							<label for="steamid" class="label">SteamID</label>
+							<input id="steamid" name="loginsteamid" type="text" class="input"  placeholder="Please enter your Steam ID">
+						</div>
+						<div class="areaofuserinfo">
+							<input type="submit" name="enterbutton" class="button" value="Enter">
+						</div>
+					</div> <!--Closing "entersteamidcard"-->
+		</div> <!-- CLosing "entireform"--> 
+	</form> <!--closing form-->
+	</body>
+</html>

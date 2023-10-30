@@ -31,26 +31,31 @@ if (!is_null($login)) {
 
     $response = $client->send_request($request);
     //$response = $client->publish($request);
-
-    echo "client received username: {$user}".PHP_EOL;
+    $uid = $response['uid'];
+    echo "client received username: {$uid}".PHP_EOL;
     echo "client received password: {$pass}".PHP_EOL;
-
-    session_commit();
+    print_r($response);
+    //session_commit();
 
     
     // Go to successful login page if login is successful
     if (($response['result']) == '1') {
         header('location:validlogin.html');
+        $_SESSION['uid'] = $response['uid'];
+        session_commit();
+
         exit;
     }
 
+    // If login is not successful, pop up message then return to login page
     else {
-      header('location:login.html');
-      exit;
+     // echo '<script>alert("Incorrect Username or Password")</script>';
+      echo '<script>if(confirm("Incorrect Username or Password")){document.location.href="home.html"};</script>';
+      //header('location:home.html');
+      //exit;
   }
 
 }
-
 
 echo "line 49 reached:";
 
