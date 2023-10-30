@@ -438,7 +438,7 @@ function steam_getNews($userid){
     $sqlResponse->close();
     $db->next_result();
 	
-	if(sizeof($newsToUpdate) > 0){
+	if(count($newsToUpdate) > 0){
 		$client = new rabbitMQClient("testRabbitMQ.ini","dmzServer");
 		$request = array();
 		$request['type'] = "get_app_news";
@@ -468,7 +468,9 @@ function steam_getNews($userid){
 		} while ($db->next_result());
 	}
 	$qarr = '(' . implode(',',$selectedGames) . ')';
-	$query = "select Games.name as game, GameNews.title as title, GameNews.link as link, GameNews.lastSync, UserGames.playTime from ((Games join GameNews on Games.appid = GameNews.appid) join UserGames on Games.appid = UserGames.gameID) where Games.appid in {$qarr} order by UserGames.playTime desc";
+	echo $qarr.PHP_EOL;
+	//$query = "select distinct Games.name as game, GameNews.title as title, GameNews.link as link, GameNews.lastSync, UserGames.playTime from ((Games join GameNews on Games.appid = GameNews.appid) join UserGames on Games.appid = UserGames.gameID) where Games.appid in {$qarr} order by UserGames.playTime desc";
+	$query = "select distinct Games.name as game, GameNews.title as title, GameNews.link as link, GameNews.lastSync from (Games join GameNews on Games.appid = GameNews.appid) where Games.appid in {$qarr}";
 	$sqlResponse = $db->query($query);
 	
 	if ($db->errno != 0)
@@ -481,6 +483,7 @@ function steam_getNews($userid){
 	while($row = $sqlResponse->fetch_assoc()){
 		$response[] = array('game'=>$row['game'],'title'=>$row['title'],'link'=>$row['link']);
 	}
+	echo "Responding with ".count($response)." items of news:".PHP_EOL;
     $sqlResponse->close();
     $db->next_result();
 	return $response;
