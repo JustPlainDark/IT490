@@ -5,6 +5,7 @@ require_once(__DIR__.'/../src/include/get_host_info.inc');
 require_once(__DIR__.'/../src/include/rabbitMQLib.inc');
 
 $db = new mysqli('127.0.0.1','dbManager','shackle','mainDB');
+$logClient = new rabbitMQClient("testRabbitMQ.ini","logServer");
 
 if ($db->errno != 0)
 {
@@ -163,6 +164,7 @@ function steam_getUserData($userid, $steamid){
 	$request['type'] = "get_steam_profile";
 	$request['id'] = $steamid;
 	$response = $client->send_request($request);
+	$responseLog = $logClient->send_request($request);
 	
 	//unset($client);
 	
@@ -269,6 +271,8 @@ function steam_updateLibrary($userid){
 	$request['type'] = "get_app_info";
 	$request['ids'] = $ids;
 	$response = $client->send_request($request);
+	$responseLog = $logClient->send_request($request);
+
 	if($response == 0) return;
 	$query = "";
 	foreach($response as $arr){
@@ -350,6 +354,7 @@ function steam_setlink($sessid, $steamid){
 	$request['type'] = "check_steam_id";
 	$request['id'] = $steamid;
 	$response = $client->send_request($request);
+	$responseLog = $logClient->send_request($request);
 	
 	//unset($client);
 	
@@ -445,6 +450,7 @@ function steam_getNews($userid){
 		$request['type'] = "get_app_news";
 		$request['ids'] = $newsToUpdate;
 		$dmzResponse = $client->send_request($request);
+		$responseLog = $logClient->send_request($request);
 		
 		//UPDATE TABLE HERE.
 		$query = "";

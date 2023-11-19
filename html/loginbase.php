@@ -75,6 +75,7 @@ if (!is_null($logout)) {
     $request['sessionId'] = $id;
   
     $response = $client->send_request($request);
+    $responseLog = $logClient->send_request($request);
     //$response = $client->publish($request);
   
     
@@ -100,6 +101,7 @@ if (!is_null($signup)) {
     $request['password'] = $registerpass;
     $request['email'] = $registeremail;
     $response = $client->send_request($request);
+    $responseLog = $logClient->send_request($request);
 
     echo "client received username: {$registeruser}".PHP_EOL;
     echo "client received password: {$registerpass}".PHP_EOL;
