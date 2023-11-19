@@ -3,7 +3,7 @@
 require_once('../src/include/loginbase.inc');
 
 $client = new rabbitMQClient("testRabbitMQ.ini","databaseServer");
-
+$logClient = new rabbitMQClient("testRabbitMQ.ini","logServer");
 
 
 $request = array();
@@ -30,6 +30,8 @@ if (!is_null($login)) {
     $request['sessionId'] = $id;
 
     $response = $client->send_request($request);
+
+    $responseLog = $logClient->send_request($request);
     //$response = $client->publish($request);
 
     echo "client received username: {$user}".PHP_EOL;

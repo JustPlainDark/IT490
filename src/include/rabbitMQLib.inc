@@ -15,6 +15,7 @@ class rabbitMQServer
 	private $routing_key = '*';
 	private $exchange_type = "topic";
 	private $auto_delete = false;
+	private $auto_ack = false;
 
 	function __construct($machine, $server = "rabbitMQ")
 	{
@@ -31,6 +32,10 @@ class rabbitMQServer
 		if (isset( $this->machine[$server]["AUTO_DELETE"]))
 		{
 			$this->auto_delete = $this->machine[$server]["AUTO_DELETE"];
+		}
+		if (isset( $this->machine[$server]["AUTO_ACK"]))
+		{
+			$this->auto_delete = $this->machine[$server]["AUTO_ACK"];
 		}
 		$this->exchange = $this->machine[$server]["EXCHANGE"];
 		$this->queue = $this->machine[$server]["QUEUE"];
@@ -123,8 +128,9 @@ class rabbitMQServer
 			//$this->conn_queue->setArgument('')
 			$this->conn_queue->bind($exchange->getName(),$this->routing_key);
 
-			$this->conn_queue->consume(array($this,'process_message'));
+			//$this->conn_queue->ack($msg->getDeliveryTag());
 
+			$this->conn_queue->consume(array($this,'process_message'));
 
 
 			// Loop as long as the channel has callbacks registered
