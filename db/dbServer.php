@@ -135,6 +135,7 @@ function logout($sessid){
 
 function steam_getUserData($userid, $steamid){
 	global $db;
+	global $logClient;
 	
 	$query = "select lastSync from SteamUsers where userID='{$userid}'";
 	$sqlResponse = $db->query($query);
@@ -246,6 +247,7 @@ function steam_getUserData($userid, $steamid){
 /////////
 function steam_updateLibrary($userid){
 	global $db;
+	global $logClient;
 	$query = "select distinct gameID from UserGames where userID='{$userid}' and gameID not in (select appid from Games)";
 	$sqlResponse = $db->query($query);
 	
@@ -329,6 +331,7 @@ function steam_giveUserData($userid){
 /////////
 function steam_setlink($sessid, $steamid){
 	global $db;
+	global $logClient;
 	$query = "select userID from Sessions where sessionid='{$sessid}' and isactive='1'";
 	$sqlResponse = $db->query($query);
 	
@@ -390,6 +393,7 @@ function steam_setlink($sessid, $steamid){
 /////////
 function steam_getNews($userid){
 	global $db;
+	global $logClient;
 	$query = "select distinct gameID, playTime from UserGames where playTime > '0' and userID = '{$userid}' order by playTime desc limit 5";
 	$sqlResponse = $db->query($query);
 	
