@@ -32,7 +32,7 @@ function doLogin($username,$password,$sessid)
     	return array("result"=>'0',"msg"=>$errmsg);
     }
     $row = $sqlResponse->fetch_assoc();
-    if($row["password"] != $password){
+    if(!password_verify($password, $row['password'])){
     	$errmsg = "Incorrect password.";
     	return array("result"=>'0',"msg"=>$errmsg);
     }
@@ -54,7 +54,8 @@ function doLogin($username,$password,$sessid)
 }
 function doRegister($username, $password, $email){
 	global $db;
-	$query = "insert into Users (username, email, password) values ('{$username}', '{$email}', '{$password}')";
+	$hash = password_hash($password, PASSWORD_DEFAULT);
+	$query = "insert into Users (username, email, password) values ('{$username}', '{$email}', '{$hash}')";
 	$sqlResponse = $db->query($query);
 	
 	if ($db->errno != 0)
