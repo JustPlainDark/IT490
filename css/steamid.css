@@ -1,0 +1,119 @@
+/* CSS for steamid page */
+
+
+body{
+	font-family: sans-serif;
+	color: blue;
+	background: url("../../images/gradient.jpg") no-repeat;
+	background-size: cover;
+	/*background-position: center;*/
+	overflow: hidden;} 
+
+.entireform{
+	position: absolute;
+	top: 50%; /*to center it vertically*/
+	left: 50%; /*to center it horizontally*/
+	transform: translate(-50%,-50%);
+	width: 50%; /* form takes up 50% of the width of the page, dynamic*/
+	border-radius: 20px; /*rounds the edges of the form */
+	padding: 40px;
+	box-sizing: border-box;
+	background: black;
+}
+
+/* To hide the radio button next to "Enter Steam ID" tab */
+.entireform .enteroption{
+	display:none;
+}
+
+/*formatting for the "Enter Steam ID" tab */
+.entireform .anoption{
+	font-size:30px;
+	margin-right:15px;
+	margin-left: 15px;
+	padding-bottom:10px;
+	margin:10px 10px 10px 150px;
+	display:inline-block;
+	border-bottom:4px solid transparent; /*tansparent allows it to not show under the tab that is not clicked on*/
+}
+
+/* Makes all the labels on the form uppercase and bold*/
+.entireform .areaofuserinfo .label, .entireform .areaofuserinfo .button{
+	text-transform:uppercase;
+	font-weight: bold;
+}
+
+/* Formatting for the label for the text box, the text that the user types, and the text on the button */
+.entireform .areaofuserinfo .label, .entireform .areaofuserinfo .input, .entireform .areaofuserinfo .button{
+	width:100%;
+	color:#fff;
+	display:block;
+}
+
+/* Formatting for background of the input text field */
+.entireform .areaofuserinfo .input{
+	border:none;
+	padding:20px 20px;
+	border-radius:50px;
+	background: rgba(255,255,255,.1);
+}
+
+/*Spacing between the input box and button*/
+.entireform .areaofuserinfo{
+	margin-bottom:30px;
+}
+
+/*placeholder text inside the input field*/
+::placeholder{
+    color: gray;
+} 
+
+/*Enter button */
+.entireform .areaofuserinfo .button{
+	background:blue;
+	border-radius:50px;
+	padding:20px 20px;
+}
+
+
+.navigationbar {
+	overflow: hidden;
+	background-color: black;
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+  }
+  
+  .navigationbar a {
+	float: left;
+	color: #f2f2f2;
+	text-align: center;
+	padding: 14px 16px;
+	text-decoration: none;
+	font-size: 17px;
+  }
+  
+  .navigationbar a:hover {
+	background-color: #ddd;
+	color: black;
+  }
+  
+  .navigationbar a.active {
+	background-color: rgb(0, 153, 255);
+	color: white;
+  }
+
+  
+  .navigationbar .logout .logoutarea .button{
+	font-size: 17px;
+	float: right;
+		position: absolute;
+		right: 20px;
+		bottom: 5px;
+		background:red;
+		width: 100px;
+		min-height: 40px;
+		border-radius:10px;
+	
+  } 

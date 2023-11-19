@@ -3,11 +3,12 @@
 
 body{
 	font-family: sans-serif;
-	color: green;
-	background: url("images/tree.jpg") no-repeat;
+	color: blue;
+	background: url("../../images/gradient.jpg") no-repeat;
 	background-size: cover;
-	background-position: center;
-	overflow: hidden;} 
+	/*background-position: center;*/
+	overflow: hidden;
+} 
 
 .entireform{
 	position: absolute;
@@ -81,7 +82,7 @@ color: gray;
 /*When you choose either Login or Signup tab, the text will turn white and the line underneath will be green */
 .options .loginoption:checked + .anoption, .options .signupoption:checked + .anoption{
 	color:#fff;
-	border-color:green;
+	border-color:blue;
 }
 
 /*Spacing between the input boxes on the forms*/
@@ -112,7 +113,7 @@ color: gray;
 
 /*Login and Signup button */
 .bothformscard .areaofuserinfo .button{
-	background:green;
+	background:blue;
 	border-radius:50px;
 	padding:20px 20px;
 }
@@ -159,7 +160,7 @@ color: gray;
 
 /*Color of the checkbox if it is checked*/
 .bothformscard .areaofuserinfo .check:checked + label .icon{
-	background: green;
+	background: blue;
 }
 
 
@@ -173,3 +174,30 @@ color: gray;
 	transform:rotate(0);
 }
 
+.navigationbar {
+	overflow: hidden;
+	background-color: black;
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+  }
+  
+  .navigationbar a {
+	float: left;
+	color: #f2f2f2;
+	text-align: center;
+	padding: 14px 16px;
+	text-decoration: none;
+	font-size: 17px;
+  }
+  
+  .navigationbar a:hover {
+	background-color: #ddd;
+	color: black;
+  }
+  
+  .navigationbar a.active {
+	background-color: rgb(0, 153, 255);
+	color: white;
+  }
