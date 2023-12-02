@@ -527,6 +527,52 @@ function refresh_steamtopgames($arr){
 	return true;
 }
 */
+
+////	FORUM/REVIEW FUNCS		////
+
+function forum_getPosts($gameID, $pageno) {
+	global $db;
+	
+	$limit = 15;
+	$offset = ($pageno - 1) * $limit;
+	
+	$query = "select count (message) from Messages where gameID='{$gameID}'";
+	$messageCount = $db->query($query);
+	if ($db->errno != 0)
+	{
+		echo "failed to execute query:".PHP_EOL;
+		echo __FILE__.':'.__LINE__.":error: ".$mydb->error.PHP_EOL;
+		return false;
+	}
+	if($offset >= $messageCount)
+		$offset = 0;
+	
+	if($messageCount == 0){
+		return false;
+	}
+	
+	$query = "select Users.userid, Users.username, Messages.* from Users join Messages on Users.userid=Messages.userID where Messages.gameID='{$gameID}' order by Messages.postTime asc limit {$limit} offset {$offset};";
+	
+	if ($db->errno != 0)
+	{
+		echo "failed to execute query:".PHP_EOL;
+		echo __FILE__.':'.__LINE__.":error: ".$mydb->error.PHP_EOL;
+		return false;
+	}
+	$pageMessages = $sqlResponse->num_rows;
+	$messages = array();
+	while($row = $sqlResponse->fetch_assoc()){
+		$messages[] = array('username'=>$row['username'], 'userid'=>$row['userid'], 'postTime'=>$row['postTime'], 'message'=>$row['message']);
+	}
+	
+	$response = array('totalMessages'=>$messageCount,'pageMessages'=>$pageMessages,'messages'=>$messages);
+	return $response;
+}
+/////////
+function forum_writePost($gameID, $userID, $message, $sendTime){
+	
+}
+
 ////	BASICS TO RUN	////
 
 function requestProcessor($request)
@@ -557,6 +603,8 @@ function requestProcessor($request)
    		return steam_getNews($request['userId']);
     //case "refresh_steamtopgames":
     //	return refresh_steamtopgames($request['games']);
+    case "forum_get_posts":
+    	return forum_getPosts($request['gameID'],$request['page']);
   }
   return array("returnCode" => '0', 'message'=>"Server received request and processed");
 }
