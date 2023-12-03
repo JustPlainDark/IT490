@@ -6,7 +6,7 @@
 	
     </head>
 
-    <body onload="getnews()">
+    <body onload="getposts()">
 
   <div class="navigationbar">
     <a href="index.html">Welcome</a>
