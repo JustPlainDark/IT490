@@ -77,7 +77,7 @@ if (!is_null($logout)) {
   
     
   if ($response == 1) {
-    header('location:home.html');
+    header('location:login.html');
     exit;
   }  
 }
@@ -103,7 +103,7 @@ if (!is_null($signup)) {
     echo "client received password: {$registerpass}".PHP_EOL;
 
     if ($response == 1) {
-      header('location:home.html');
+      header('location:index.html');
       exit;
     }
 }

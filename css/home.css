@@ -176,7 +176,7 @@ color: gray;
 
 .navigationbar {
 	overflow: hidden;
-	background-color: black;
+	background-color: blue;
 	position: fixed;
 	top: 0px;
 	left: 0px;
@@ -201,3 +201,10 @@ color: gray;
 	background-color: rgb(0, 153, 255);
 	color: white;
   }
+
+
+
+
+
+
+  

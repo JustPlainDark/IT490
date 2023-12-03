@@ -1,39 +1,62 @@
-<html>
-    <head>
-        <title> Welcome to Our Website! </title>
-        <!-- link to css stylesheet, has all the formatting--> 
-		<link rel="stylesheet" href="../css/index.css">
-	
-    </head>
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Welcome!</title>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!--===============================================================================================-->	
+		<link rel="stylesheet" type="text/css" href="../Login_v5/vendor/bootstrap/css/bootstrap.min.css">
+	<!--===============================================================================================-->
+		<link rel="stylesheet" type="text/css" href="../Login_v5/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+	<!--===============================================================================================-->
+		<link rel="stylesheet" type="text/css" href="../Login_v5/fonts/Linearicons-Free-v1.0.0/icon-font.min.css">
+	<!--===============================================================================================-->
+		<link rel="stylesheet" type="text/css" href="../Login_v5/vendor/animate/animate.css">
+	<!--===============================================================================================-->	
+		<link rel="stylesheet" type="text/css" href="../Login_v5/vendor/css-hamburgers/hamburgers.min.css">
+	<!--===============================================================================================-->
+		<link rel="stylesheet" type="text/css" href="../Login_v5/vendor/animsition/css/animsition.min.css">
+	<!--===============================================================================================-->
+		<link rel="stylesheet" type="text/css" href="../Login_v5/vendor/select2/select2.min.css">
+	<!--===============================================================================================-->	
+		<link rel="stylesheet" type="text/css" href="../Login_v5/vendor/daterangepicker/daterangepicker.css">
+	<!--===============================================================================================-->
+		<link rel="stylesheet" type="text/css" href="../css/index.css">
+		<link rel="stylesheet" type="text/css" href="../css/main.css">
+		<link rel="stylesheet" type="text/css" href="../css/util.css">
+	<!--===============================================================================================-->
 
-    <body>
+</head>
+<body>
+	<div class="navigationbar">
+		<a href="index.html">Welcome</a>
+		<a href="steamid.html">SteamID</a>
+		<a href="profile.php">Steam Profile</a>
+		<a href="news.php">Game News</a>
 
-        <div class="navigationbar">
-            <a class="active" href="index.html">Welcome</a>
-            <a href="steamid.html">SteamID</a>
-            <a href="profile.php">Steam Profile</a>
-            <a href="news.php">Game News</a>
 
-           
-            <div class="logout">
-                <form method="POST" action="/html/loginbase.php">
-                    <div class="logoutarea">
-                        <input type="submit" name="logoutbutton" class="button" value="Log Out">
-                    </div>
-                </form>
-            </div>
+		<div class="logout">
+			<form method="POST" action="/html/loginbase.php">
+				<div class="logoutarea">
+					<input type="submit" name="logoutbutton" class="button" value="Log Out">
+				</div>
+			</form>
+		</div>
 
-        </div>
-    
-        <div class = "welcome">
-            <h1> Welcome to our website!</h1>
-            <p> Hope you have a great day</p>
-        </div>
-    
-          
-      
-          
+	  </div>
 
-    </body>
 
+
+	<div class="limiter">
+		<div class="container-login100" style="background-image: url('../Login_v5/images/bg-01.jpg');">
+			<div class="wrap-login100 p-l-110 p-r-110 p-t-62 p-b-33">
+					<span class="login100-form-title p-b-53">
+						Welcome to our site <br>
+                        Hope you have a great day!
+					</span>
+			</div>
+		</div>
+	</div>
+
+</body>
 </html>
