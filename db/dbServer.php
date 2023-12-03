@@ -536,14 +536,15 @@ function forum_getPosts($gameID, $pageno) {
 	$limit = 15;
 	$offset = ($pageno - 1) * $limit;
 	
-	$query = "select count (message) from Messages where gameID='{$gameID}'";
-	$messageCount = $db->query($query);
+	$query = "select gameID from Messages where gameID='{$gameID}'";
+	$res = $db->query($query);
 	if ($db->errno != 0)
 	{
 		echo "failed to execute query:".PHP_EOL;
 		echo __FILE__.':'.__LINE__.":error: ".$mydb->error.PHP_EOL;
 		return false;
 	}
+	$messageCount = $res->num_rows;
 	if($offset >= $messageCount)
 		$offset = 0;
 	
@@ -552,6 +553,8 @@ function forum_getPosts($gameID, $pageno) {
 	}
 	
 	$query = "select Users.userid, Users.username, Messages.* from Users join Messages on Users.userid=Messages.userID where Messages.gameID='{$gameID}' order by Messages.postTime asc limit {$limit} offset {$offset};";
+	
+	$sqlResponse = $db->query($query);
 	
 	if ($db->errno != 0)
 	{
