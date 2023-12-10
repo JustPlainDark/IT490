@@ -29,7 +29,11 @@
         <div class = "newsbox">
             <script>
             	function loadstuff(){
+            		<?php
+            			if(isset($_POST['sendMessage']) && isset($_POST['message']) && isset($_SESSION['uid'])) {
+            		?>
             		newpost();
+            		<?php } ?>
             		getposts();
             	}
             	function newpost(){
@@ -38,7 +42,7 @@
             		?>
             			return;
             		<?php
-            			}
+            			}else{
             			$userId = $_SESSION['uid'];
                         if(isset($_GET['gid'])) {
 	                        $gameId = $_GET['gid'];
@@ -67,6 +71,7 @@
                         $request['sendTime'] = $postTime;
                         
                         $postR = $client->send_request($request);
+                        }
             		?>
             	}
                 function getposts(){
@@ -92,8 +97,8 @@
 						if($getR == false){
 							$problem = true;
 						}
-						if(!problem){
-							$gameName = getR['game'];
+						if(!$problem){
+							$gameName = $getR['game'];
 						}
                    ?>
                 }

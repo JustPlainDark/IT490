@@ -634,7 +634,7 @@ function requestProcessor($request)
     case "forum_get_posts":
     	return forum_getPosts($request['gameID'],$request['page']);
     case "forum_add_post":
-    	return forum_addPost($request['gameID'], $request['userID'], $request['message'], $request['sendTime']);
+    	return forum_writePost($request['gameID'], $request['userID'], $request['message'], $request['sendTime']);
   }
   return array("returnCode" => '0', 'message'=>"Server received request and processed");
 }
