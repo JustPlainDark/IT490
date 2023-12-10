@@ -533,6 +533,20 @@ function refresh_steamtopgames($arr){
 function forum_getPosts($gameID, $pageno) {
 	global $db;
 	
+	$query = "select name from Games where appid='{$gameID}' limit 1;";
+	$res = $db->query($query);
+	if ($db->errno != 0)
+	{
+		echo "failed to execute query:".PHP_EOL;
+		echo __FILE__.':'.__LINE__.":error: ".$mydb->error.PHP_EOL;
+		return false;
+	}
+	if($res->num_rows == 0){
+		return false;
+	}
+	$row = $res->fetch_assoc();
+	$gname = $row['name'];
+	
 	$limit = 15;
 	$offset = ($pageno - 1) * $limit;
 	
@@ -549,7 +563,7 @@ function forum_getPosts($gameID, $pageno) {
 		$offset = 0;
 	
 	if($messageCount == 0){
-		return false;
+		return array('game'=>$gname,'totalMessages'=>0,'pageMessages'=>0,'messages'=>array());
 	}
 	
 	$query = "select Users.userid, Users.username, Messages.* from Users join Messages on Users.userid=Messages.userID where Messages.gameID='{$gameID}' order by Messages.postTime asc limit {$limit} offset {$offset};";
@@ -568,12 +582,23 @@ function forum_getPosts($gameID, $pageno) {
 		$messages[] = array('username'=>$row['username'], 'userid'=>$row['userid'], 'postTime'=>$row['postTime'], 'message'=>$row['message']);
 	}
 	
-	$response = array('totalMessages'=>$messageCount,'pageMessages'=>$pageMessages,'messages'=>$messages);
+	$response = array('game'=>$gname,'totalMessages'=>$messageCount,'pageMessages'=>$pageMessages,'messages'=>$messages);
 	return $response;
 }
 /////////
 function forum_writePost($gameID, $userID, $message, $sendTime){
+	global $db;
+	$cleanMessage = mysqli_real_escape_string($db, $message);
+	$query = "insert into Messages (gameID, userID, postTime, message) values ({$gameID},{$userID},{$sendTime},{$cleanMessage});";
+	$sqlResponse = $db->query($query);
 	
+	if ($db->errno != 0)
+	{
+		echo "failed to execute query:".PHP_EOL;
+		echo __FILE__.':'.__LINE__.":error: ".$mydb->error.PHP_EOL;
+		return false;
+	}
+	return true;
 }
 
 ////	BASICS TO RUN	////
@@ -608,6 +633,8 @@ function requestProcessor($request)
     //	return refresh_steamtopgames($request['games']);
     case "forum_get_posts":
     	return forum_getPosts($request['gameID'],$request['page']);
+    case "forum_add_post":
+    	return forum_addPost($request['gameID'], $request['userID'], $request['message'], $request['sendTime']);
   }
   return array("returnCode" => '0', 'message'=>"Server received request and processed");
 }
