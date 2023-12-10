@@ -30,7 +30,7 @@ if (!is_null($enter)) {
     
     // Go to index page if successful
     if ($response == 1) {
-        header('location:index.html');
+        header('location:profile.php');
         exit;
     }
 

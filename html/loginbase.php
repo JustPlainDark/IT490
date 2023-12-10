@@ -20,7 +20,7 @@ if (!is_null($login)) {
     session_id($id);
     print("id: ".$id);
 
-    $_SESSION['type'] = "login";
+    //$_SESSION['type'] = "login";
     $_SESSION['username'] = $user;
     $_SESSION['id'] = $id;
 
@@ -40,9 +40,10 @@ if (!is_null($login)) {
     
     // Go to successful login page if login is successful
     if (($response['result']) == '1') {
-        header('location:validlogin.html');
-        $_SESSION['uid'] = $response['uid'];
-        session_commit();
+      $_SESSION['uid'] = $response['uid'];
+      session_commit();
+      header('location:validlogin.html');
+
 
         exit;
     }
