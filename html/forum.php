@@ -30,19 +30,17 @@
             <script>
             	function loadstuff(){
             		<?php
-            			if(isset($_POST['sendMessage']) && isset($_POST['message']) && isset($_SESSION['uid'])) {
+            			if(isset($_POST['sendMessage']) && isset($_POST['message']) && isset($_SESSION['uid'])) 
+            		echo "window.newpost();".PHP_EOL;
+
             		?>
-            		newpost();
-            		<?php } ?>
-            		getposts();
+            		window.getposts();
             	}
             	function newpost(){
+            		
             		<?php
-            			if(!(isset($_POST['sendMessage']) && isset($_POST['message']) && isset($_SESSION['uid']))) {
-            		?>
-            			return;
-            		<?php
-            			}else{
+                        if (isset($_POST['sendMessage']) && isset($_POST['message']) && isset($_SESSION['uid'])) {
+            			
             			$userId = $_SESSION['uid'];
                         if(isset($_GET['gid'])) {
 	                        $gameId = $_GET['gid'];
@@ -56,7 +54,7 @@
             			require_once('../src/include/loginbase.inc'); 
 
                         $client = new rabbitMQClient("testRabbitMQ.ini","databaseServer"); 
-                        session_start();
+                        //session_start();
                         if(isset($_GET['gid'])) {
 	                        $gameId = $_GET['gid'];
                         }
@@ -71,7 +69,7 @@
                         $request['sendTime'] = $postTime;
                         
                         $postR = $client->send_request($request);
-                        }
+                    }
             		?>
             	}
                 function getposts(){
@@ -80,7 +78,7 @@
                         require_once('../src/include/loginbase.inc'); 
 
                         $client = new rabbitMQClient("testRabbitMQ.ini","databaseServer"); 
-                        session_start();
+                        //session_start();
                         if(isset($_GET['gid'])) {
 	                        $gameId = $_GET['gid'];
                         }
@@ -102,6 +100,8 @@
 						}
                    ?>
                 }
+
+                
             </script>
             <?php if(isset($problem) && $problem) { ?>
             <h4>Error: could not find game.</h4>
