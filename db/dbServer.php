@@ -589,7 +589,9 @@ function forum_getPosts($gameID, $pageno) {
 function forum_writePost($gameID, $userID, $message, $sendTime){
 	global $db;
 	$cleanMessage = mysqli_real_escape_string($db, $message);
-	$query = "insert into Messages (gameID, userID, postTime, message) values ({$gameID},{$userID},{$sendTime},{$cleanMessage});";
+	if($cleanMessage == null)
+		return false;
+	$query = "insert into Messages (gameID, userID, postTime, message) values ('{$gameID}','{$userID}',CURRENT_TIMESTAMP(),'{$cleanMessage}');";
 	$sqlResponse = $db->query($query);
 	
 	if ($db->errno != 0)
