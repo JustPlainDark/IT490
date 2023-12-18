@@ -529,6 +529,28 @@ function refresh_steamtopgames($arr){
 */
 
 ////	FORUM/REVIEW FUNCS		////
+function getUserGameList($userID, $limit){
+	global $db;
+	$query = "select Games.name as name, Games.appid as gid, UserGames.gameID, UserGames.playTime from (UserGames join Games on UserGames.gameID = Games.appid) where UserGames.playTime > '0' and UserGames.userID = '{$userid}' order by UserGames.playTime desc limit {$limit};";
+	$sqlResponse = $db->query($query);
+	if ($db->errno != 0)
+	{
+		echo "failed to execute query:".PHP_EOL;
+		echo __FILE__.':'.__LINE__.":error: ".$mydb->error.PHP_EOL;
+		return false;
+	}
+	if($res->num_rows == 0){
+		return false;
+	}
+	$response = array();
+	
+	while($row = $sqlResponse->fetch_assoc()){
+		$response[] = array('gname'=>$row['name'],'gid'=>$row['gid']);
+	}
+    $sqlResponse->close();
+    $db->next_result();
+	return $response;
+}
 
 function forum_getPosts($gameID, $pageno) {
 	global $db;
@@ -633,6 +655,8 @@ function requestProcessor($request)
    		return steam_getNews($request['userId']);
     //case "refresh_steamtopgames":
     //	return refresh_steamtopgames($request['games']);
+    case "user_get_games":
+    	return getUserGameList($request['userID'], 25);
     case "forum_get_posts":
     	return forum_getPosts($request['gameID'],$request['page']);
     case "forum_add_post":
