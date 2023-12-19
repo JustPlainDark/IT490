@@ -529,7 +529,7 @@ function refresh_steamtopgames($arr){
 */
 
 ////	FORUM/REVIEW FUNCS		////
-function getUserGameList($userID, $limit){
+function getUserGameList($userid, $limit){
 	global $db;
 	$query = "select Games.name as name, Games.appid as gid, UserGames.gameID, UserGames.playTime from (UserGames join Games on UserGames.gameID = Games.appid) where UserGames.playTime > '0' and UserGames.userID = '{$userid}' order by UserGames.playTime desc limit {$limit};";
 	$sqlResponse = $db->query($query);
@@ -539,7 +539,7 @@ function getUserGameList($userID, $limit){
 		echo __FILE__.':'.__LINE__.":error: ".$mydb->error.PHP_EOL;
 		return false;
 	}
-	if($res->num_rows == 0){
+	if($sqlResponse->num_rows == 0){
 		return false;
 	}
 	$response = array();
