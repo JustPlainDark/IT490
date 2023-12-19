@@ -1,10 +1,11 @@
 <html>
     <head>
         <title> Forum </title>
-		<meta charset="UTF-8">
-
-		<link rel="stylesheet" type="text/css" href="../css/news.css"> 
+        <!-- link to css stylesheet, has all the formatting--> 
+		<link rel="stylesheet" href="../css/news.css">
+	
     </head>
+
 <body onload="loadstuff()">
 	
 	<script><?php session_start(); ?></script>
@@ -29,7 +30,7 @@
             <script>
             	function loadstuff(){
             		<?php
-            			if(isset($_POST['sendMessage']) && isset($_POST['message']) && isset($_SESSION['uid'])) 
+            			if(isset($_POST['makeReview']) && isset($_POST['message']) && isset($_SESSION['uid'])) 
             		echo "window.newpost();".PHP_EOL;
 
             		?>
@@ -38,7 +39,7 @@
             	function newpost(){
             		
             		<?php
-                        if (isset($_POST['sendMessage']) && isset($_POST['message']) && isset($_SESSION['uid'])) {
+                        if (isset($_POST['makeReview']) && isset($_POST['message']) && isset($_SESSION['uid'])) {
             			
             			$userId = $_SESSION['uid'];
                         if(isset($_GET['gid'])) {
@@ -49,6 +50,10 @@
                         }
             			$message = $_POST['message'];
             			$postTime = time();
+            			if($_POST['posneg'] == "pos")
+            				$positive = 1;
+            			else
+            				$positive = 0;
             			
             			require_once('../src/include/loginbase.inc'); 
 
@@ -61,11 +66,11 @@
 	                    	$gameId = '582010'; //Set to "Monster Hunter: World" for testing purposes.
                         }
                         $request = array(); 
-                        $request['type'] = "forum_add_post";
+                        $request['type'] = "review_add_post";
                         $request['gameID'] = $gameId;
                         $request['userID'] = $userId;
                         $request['message'] = $message;
-                        $request['sendTime'] = $postTime;
+                        $request['positive'] = $positive;
                         
                         $postR = $client->send_request($request);
                     }
@@ -85,7 +90,7 @@
 	                    	$gameId = '582010'; //Set to "Monster Hunter: World" for testing purposes.
                         }
                         $request = array(); 
-                        $request['type'] = "forum_get_posts";
+                        $request['type'] = "review_get_posts";
                         $request['gameID'] = $gameId;
                         $request['page'] = 1;
                         
@@ -111,18 +116,22 @@
 
                 <div class="userinfo">      
 
-                    <h4> <?php echo $message['username']; ?> said at <?php echo $message['postTime']; ?>:</h4>
+                    <h4><?php echo $message['username'] . ($message['positive'] == '1' ? " " : " dis") . "likes this game!"; ?></h4>
                     <p><?php echo $message['message']; ?></p>
 					<br>
                 </div>
                 <?php } ?>
                 
                 <?php if(!isset($_SESSION['uid'])) { ?>
-                	<h2>(You must be logged in to make a post.)</h2>
+                	<h2>(You must be logged in to make a review.)</h2>
                 <?php } else { ?>
                 	<form id="messageForm" method="POST" action="">
-                		<textarea id="messageField" name="message" form="messageForm" placeholder="Say something about this game! Just remember to be respectful." rows="80" cols="5" maxlength="400" required></textarea>
-                		<input type="submit" name="sendMessage" value="Say it!">
+                		<input type="radio" id="pos" name="posneg" value="pos" required>
+                		<label for="pos">I enjoyed this game!</label><br>
+                		<input type="radio" id="neg" name="posneg" value="neg" required>
+                		<label for="neg">I did not enjoy this game!</label><br>
+                		<textarea id="messageField" name="message" form="messageForm" placeholder="Give your honest opinion! Just remember to be respectful." rows="80" cols="5" maxlength="400" required></textarea>
+                		<input type="submit" name="makeReview" value="Say it!">
                 	</form>
                 <?php } }?>
         </div>

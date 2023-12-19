@@ -529,7 +529,102 @@ function refresh_steamtopgames($arr){
 */
 
 ////	FORUM/REVIEW FUNCS		////
-
+function getUserGameList($userid, $limit){
+	global $db;
+	$query = "select Games.name as name, Games.appid as gid, UserGames.gameID, UserGames.playTime from (UserGames join Games on UserGames.gameID = Games.appid) where UserGames.playTime > '0' and UserGames.userID = '{$userid}' order by UserGames.playTime desc limit {$limit};";
+	$sqlResponse = $db->query($query);
+	if ($db->errno != 0)
+	{
+		echo "failed to execute query:".PHP_EOL;
+		echo __FILE__.':'.__LINE__.":error: ".$mydb->error.PHP_EOL;
+		return false;
+	}
+	if($sqlResponse->num_rows == 0){
+		return false;
+	}
+	$response = array();
+	
+	while($row = $sqlResponse->fetch_assoc()){
+		$response[] = array('gname'=>$row['name'],'gid'=>$row['gid']);
+	}
+    $sqlResponse->close();
+    $db->next_result();
+	return $response;
+}
+/////////
+function review_getPosts($gameID, $pageno) {
+	global $db;
+	
+	$query = "select name from Games where appid='{$gameID}' limit 1;";
+	$res = $db->query($query);
+	if ($db->errno != 0)
+	{
+		echo "failed to execute query:".PHP_EOL;
+		echo __FILE__.':'.__LINE__.":error: ".$mydb->error.PHP_EOL;
+		return false;
+	}
+	if($res->num_rows == 0){
+		return false;
+	}
+	$row = $res->fetch_assoc();
+	$gname = $row['name'];
+	
+	$limit = 15;
+	$offset = ($pageno - 1) * $limit;
+	
+	$query = "select gameID from Reviews where gameID='{$gameID}'";
+	$res = $db->query($query);
+	if ($db->errno != 0)
+	{
+		echo "failed to execute query:".PHP_EOL;
+		echo __FILE__.':'.__LINE__.":error: ".$mydb->error.PHP_EOL;
+		return false;
+	}
+	$messageCount = $res->num_rows;
+	if($offset >= $messageCount)
+		$offset = 0;
+	
+	if($messageCount == 0){
+		return array('game'=>$gname,'totalMessages'=>0,'pageMessages'=>0,'messages'=>array());
+	}
+	
+	$query = "select Users.userid, Users.username, Reviews.* from Users join Reviews on Users.userid=Reviews.userID where Reviews.gameID='{$gameID}' order by Reviews.postTime asc limit {$limit} offset {$offset};";
+	
+	$sqlResponse = $db->query($query);
+	
+	if ($db->errno != 0)
+	{
+		echo "failed to execute query:".PHP_EOL;
+		echo __FILE__.':'.__LINE__.":error: ".$mydb->error.PHP_EOL;
+		return false;
+	}
+	$pageMessages = $sqlResponse->num_rows;
+	$messages = array();
+	while($row = $sqlResponse->fetch_assoc()){
+		$messages[] = array('username'=>$row['username'], 'userid'=>$row['userid'], 'postTime'=>$row['postTime'], 'message'=>$row['message'], 'positive'=>$row['isPositive']);
+	}
+	
+	$response = array('game'=>$gname,'totalMessages'=>$messageCount,'pageMessages'=>$pageMessages,'messages'=>$messages);
+	return $response;
+}
+/////////
+function review_writePost($gameID, $userID, $message, $isPositive){
+	global $db;
+	$cleanMessage = mysqli_real_escape_string($db, $message);
+	if($cleanMessage == null)
+		return false;
+	$query = "insert into Reviews (gameID, userID, message, isPositive) values ('{$gameID}','{$userID}','{$cleanMessage}','{$isPositive}') on duplicate key update message='{$cleanMessage}', isPositive='{$isPositive}', postTime = current_timestamp;";
+	$sqlResponse = $db->query($query);
+	
+	if ($db->errno != 0)
+	{
+		echo "failed to execute query:".PHP_EOL;
+		echo __FILE__.':'.__LINE__.":error: ".$mydb->error.PHP_EOL;
+		return false;
+	}
+	return true;
+}
+/////////
 function forum_getPosts($gameID, $pageno) {
 	global $db;
 	
@@ -602,7 +697,6 @@ function forum_writePost($gameID, $userID, $message, $sendTime){
 	}
 	return true;
 }
-
 ////	BASICS TO RUN	////
 
 function requestProcessor($request)
@@ -633,10 +727,16 @@ function requestProcessor($request)
    		return steam_getNews($request['userId']);
     //case "refresh_steamtopgames":
     //	return refresh_steamtopgames($request['games']);
+    case "user_get_games":
+    	return getUserGameList($request['userID'], 25);
     case "forum_get_posts":
     	return forum_getPosts($request['gameID'],$request['page']);
     case "forum_add_post":
     	return forum_writePost($request['gameID'], $request['userID'], $request['message'], $request['sendTime']);
+    case "review_get_posts":
+    	return review_getPosts($request['gameID'],$request['page']);
+    case "review_add_post":
+    	return review_writePost($request['gameID'], $request['userID'], $request['message'], $request['positive']);
   }
   return array("returnCode" => '0', 'message'=>"Server received request and processed");
 }
