@@ -1,6 +1,6 @@
 <?php
 
-require_once('../src/include/loginbase.inc');
+require_once('src/include/loginbase.inc');
 
 $client = new rabbitMQClient("testRabbitMQ.ini","databaseServer");
 
