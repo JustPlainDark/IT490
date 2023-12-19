@@ -61,6 +61,6 @@
             <h2><?php echo $game['gname']; ?></h2>
             <p><?php echo '<a href="forum.php?gid=', urlencode($game['gid']), '">Forum</a>        <a href="review.php?gid=', urlencode($game['gid']), '">Reviews</a>'; ?></p>
         </div>
-		<?php } ?>
+		<?php }} ?>
     </body>
 </html>

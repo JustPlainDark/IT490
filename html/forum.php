@@ -1,11 +1,10 @@
 <html>
     <head>
         <title> Forum </title>
-        <!-- link to css stylesheet, has all the formatting--> 
-		<link rel="stylesheet" href="../css/news.css">
-	
-    </head>
+		<meta charset="UTF-8">
 
+		<link rel="stylesheet" type="text/css" href="../css/news.css"> 
+    </head>
 <body onload="loadstuff()">
 	
 	<script><?php session_start(); ?></script>
