@@ -114,7 +114,7 @@
             <?php if(isset($problem) && $problem) { ?>
             <h4>Error: could not find game.</h4>
             <?php } else { ?>
-            <h1>Reviews for <em><?php echo $gameName; ?></em>  (<?php echo '<a href="review.php?gid=', urlencode($game['gid']), '&censor=', $censor ? 'false">uncensor' : 'true">censor', '</a>'; ?>):</h1> <!-- TODO: Make title dynamic to game in question. -->
+            <h1>Reviews for <em><?php echo $gameName; ?></em>  (<?php echo '<a href="review.php?gid=', urlencode($gameId), '&censor=', $censor ? 'false">uncensor' : 'true">censor', '</a>'; ?>):</h1> <!-- TODO: Make title dynamic to game in question. -->
 
                 <?php foreach($getR['messages'] as $message) { ?>
 
