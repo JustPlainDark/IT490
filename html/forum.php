@@ -28,16 +28,66 @@
         <div class = "newsbox">
             <script>
             	function loadstuff(){
-            		<?php
-            			if(isset($_POST['sendMessage']) && isset($_POST['message']) && isset($_SESSION['uid'])) 
-            		echo "window.newpost();".PHP_EOL;
+            	<?php
+            			require_once('../src/include/loginbase.inc'); 
 
+                        $client = new rabbitMQClient("testRabbitMQ.ini","databaseServer"); 
+                        if (isset($_POST['sendMessage']) && isset($_POST['message']) && isset($_SESSION['uid'])) {
+            			
+            			$userId = $_SESSION['uid'];
+                        if(isset($_GET['gid'])) {
+	                        $gameId = $_GET['gid'];
+                        }
+	                    else {
+	                    	$gameId = '582010'; //Set to "Monster Hunter: World" for testing purposes.
+                        }
+            			$message = $_POST['message'];
+            			$postTime = time();
+            			
+                        //session_start();
+                        if(isset($_GET['gid'])) {
+	                        $gameId = $_GET['gid'];
+                        }
+	                    else {
+	                    	$gameId = '582010'; //Set to "Monster Hunter: World" for testing purposes.
+                        }
+                        $request = array(); 
+                        $request['type'] = "forum_add_post";
+                        $request['gameID'] = $gameId;
+                        $request['userID'] = $userId;
+                        $request['message'] = $message;
+                        $request['sendTime'] = $postTime;
+                        
+                        $postR = $client->send_request($request);
+                    }
+                    if(isset($_GET['gid'])) {
+	                        $gameId = $_GET['gid'];
+                        }
+	                    else {
+	                    	$gameId = '582010'; //Set to "Monster Hunter: World" for testing purposes.
+                        }
+                        $censor = false;
+                        if(isset($_GET['censor']) && $_GET['censor'] == 'true')
+                        	$censor = true;
+                        $request = array(); 
+                        $request['type'] = "forum_get_posts";
+                        $request['gameID'] = $gameId;
+                        $request['page'] = 1;
+                        $request['censor'] = $censor;
+                        
+                        $getR = $client->send_request($request);
+						$problem = false;
+						if($getR == false){
+							$problem = true;
+						}
+						if(!$problem){
+							$gameName = $getR['game'];
+						}
             		?>
-            		window.getposts();
             	}
             	function newpost(){
             		
-            		<?php
+            		<?php/*
                         if (isset($_POST['sendMessage']) && isset($_POST['message']) && isset($_SESSION['uid'])) {
             			
             			$userId = $_SESSION['uid'];
@@ -68,11 +118,11 @@
                         $request['sendTime'] = $postTime;
                         
                         $postR = $client->send_request($request);
-                    }
+                    }*/
             		?>
             	}
                 function getposts(){
-                    <?php  
+                    <?php  /*
 
                         require_once('../src/include/loginbase.inc'); 
 
@@ -101,7 +151,7 @@
 						if(!$problem){
 							$gameName = $getR['game'];
 						}
-                   ?>
+                   ?>*/
                 }
 
                 
