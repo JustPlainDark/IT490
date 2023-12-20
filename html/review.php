@@ -89,10 +89,14 @@
 	                    else {
 	                    	$gameId = '582010'; //Set to "Monster Hunter: World" for testing purposes.
                         }
+                        $censor = false;
+                        if(isset($_GET['censor']) && $_GET['censor'] == 'true')
+                        	$censor = true;
                         $request = array(); 
                         $request['type'] = "review_get_posts";
                         $request['gameID'] = $gameId;
                         $request['page'] = 1;
+                        $request['censor'] = $censor;
                         
                         $getR = $client->send_request($request);
 						$problem = false;
@@ -110,7 +114,7 @@
             <?php if(isset($problem) && $problem) { ?>
             <h4>Error: could not find game.</h4>
             <?php } else { ?>
-            <h1>Forum posts for <em><?php echo $gameName; ?></em>:</h1> <!-- TODO: Make title dynamic to game in question. -->
+            <h1>Reviews for <em><?php echo $gameName; ?></em>  (<?php echo '<a href="review.php?gid=', urlencode($game['gid']), '&censor=', $censor ? 'false">uncensor' : 'true">censor', '</a>'; ?>):</h1> <!-- TODO: Make title dynamic to game in question. -->
 
                 <?php foreach($getR['messages'] as $message) { ?>
 
