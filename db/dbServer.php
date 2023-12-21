@@ -3,7 +3,6 @@
 require_once(__DIR__.'/../src/include/path.inc');
 require_once(__DIR__.'/../src/include/get_host_info.inc');
 require_once(__DIR__.'/../src/include/rabbitMQLib.inc');
-
 $db = new mysqli('127.0.0.1','dbManager','shackle','mainDB');
 
 if ($db->errno != 0)
@@ -602,14 +601,14 @@ function review_getPosts($gameID, $pageno, $censored) {
 	$messages = array();
 	
 	if($censored){
-		$profs = file_get_contents('profanityList.txt');
+		$profs = file_get_contents('profanityList.txt', true);
 		$profList = explode(",",$profs);
 	}
 	
 	while($row = $sqlResponse->fetch_assoc()){
 		$msg = $row['message'];
 		if($censored)
-			$msg = str_ireplace($profsList, "****", $msg);
+			$msg = str_ireplace($profList, "****", $msg);
 		$messages[] = array('username'=>$row['username'], 'userid'=>$row['userid'], 'postTime'=>$row['postTime'], 'message'=>$msg, 'positive'=>$row['isPositive']);
 	}
 	
@@ -684,18 +683,21 @@ function forum_getPosts($gameID, $pageno, $censored) {
 	$messages = array();
 	
 	if($censored){
-		$profs = file_get_contents('profanityList.txt');
+		$profs = file_get_contents('profanityList.txt', true);
 		$profList = explode(",",$profs);
 	}
 	
+	echo "Pre row sqlresponse while loop".PHP_EOL;
 	while($row = $sqlResponse->fetch_assoc()){
 		$msg = $row['message'];
 		if($censored)
-			$msg = str_ireplace($profsList, "****", $msg);
+			$msg = str_ireplace($profList, "****", $msg);
 		$messages[] = array('username'=>$row['username'], 'userid'=>$row['userid'], 'postTime'=>$row['postTime'], 'message'=>$msg);
 	}
 	
+	echo "assemble array of response".PHP_EOL;
 	$response = array('game'=>$gname,'totalMessages'=>$messageCount,'pageMessages'=>$pageMessages,'messages'=>$messages);
+	echo "send response".PHP_EOL;
 	return $response;
 }
 /////////
@@ -756,6 +758,7 @@ function requestProcessor($request)
     case "review_add_post":
     	return review_writePost($request['gameID'], $request['userID'], $request['message'], $request['positive']);
   }
+  echo "return_processor: sending request back".PHP_EOL;
   return array("returnCode" => '0', 'message'=>"Server received request and processed");
 }
 
