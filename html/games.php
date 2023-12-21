@@ -2,7 +2,7 @@
     <head>
         <title> Forum </title>
         <!-- link to css stylesheet, has all the formatting--> 
-		<link rel="stylesheet" href="../css/news.css">
+		<link rel="stylesheet" href="css/news.css">
 	
     </head>
 

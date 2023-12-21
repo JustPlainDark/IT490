@@ -59,7 +59,11 @@
                         $request['sendTime'] = $postTime;
                         
                         $postR = $client->send_request($request);
-                    }
+                        $censor = false;
+                        if(isset($_GET['censor']) && $_GET['censor'] == 'true')
+                        	$censor = true;
+                        header ("Refresh:0");
+                    } else {
                     if(isset($_GET['gid'])) {
 	                        $gameId = $_GET['gid'];
                         }
@@ -83,11 +87,12 @@
 						if(!$problem){
 							$gameName = $getR['game'];
 						}
+                    }
             		?>
             	}
             	function newpost(){
             		
-            		<?php/*
+            		<?php /*
                         if (isset($_POST['sendMessage']) && isset($_POST['message']) && isset($_SESSION['uid'])) {
             			
             			$userId = $_SESSION['uid'];
@@ -150,8 +155,8 @@
 						}
 						if(!$problem){
 							$gameName = $getR['game'];
-						}
-                   ?>*/
+						}*/
+                   ?>
                 }
 
                 

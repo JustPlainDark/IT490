@@ -30,7 +30,7 @@
             <script>
             	function loadstuff(){
             	<?php
-        			require_once('../src/include/loginbase.inc'); 
+        			require_once('src/include/loginbase.inc'); 
 
                     $client = new rabbitMQClient("testRabbitMQ.ini","databaseServer"); 
             		if (isset($_POST['makeReview']) && isset($_POST['message']) && isset($_SESSION['uid'])) {
@@ -64,7 +64,13 @@
                         $request['positive'] = $positive;
                         
                         $postR = $client->send_request($request);
-                    }
+                        $censor = false;
+                        if(isset($_GET['censor']) && $_GET['censor'] == 'true')
+                        	$censor = true;
+                 //      header("review.php?gid=".$gameId."&censor=".$censor ? "true" : "false"); 
+                        header("Refresh:0");
+                    } else {
+
                     if(isset($_GET['gid'])) {
 	                        $gameId = $_GET['gid'];
                         }
@@ -88,11 +94,12 @@
 						if(!$problem){
 							$gameName = $getR['game'];
 						}
+                    }
 					?>
             	}
             	function newpost(){
             		
-            		<?php/*
+            		<?php /*
                         if (isset($_POST['makeReview']) && isset($_POST['message']) && isset($_SESSION['uid'])) {
             			
             			$userId = $_SESSION['uid'];
