@@ -208,6 +208,15 @@ iframe {
   text-align: center;
 }
 
+.login100-form-title2 {
+  width: 100%;
+  display: block;
+  font-family: Montserrat-Medium;
+  font-size: 39px;
+  color: #555555;
+  line-height: 1.2;
+  text-align: center;
+}
 /*------------------------------------------------------------------
 [ Button sign in with ]*/
 .btn-face,

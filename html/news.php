@@ -40,7 +40,7 @@
 <script> <?php session_start(); ?> </script>
 
 
-<nav class="navigationbar">
+<nav class="navigationbar fixed-top">
 		<ul class="nav-menu">
 			<li class="nav-item">
 				<a href="index.html" class="nav-link">Welcome</a>
