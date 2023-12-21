@@ -3,7 +3,6 @@
 require_once(__DIR__.'/../src/include/path.inc');
 require_once(__DIR__.'/../src/include/get_host_info.inc');
 require_once(__DIR__.'/../src/include/rabbitMQLib.inc');
-
 $db = new mysqli('127.0.0.1','dbManager','shackle','mainDB');
 
 if ($db->errno != 0)
@@ -552,7 +551,7 @@ function getUserGameList($userid, $limit){
 	return $response;
 }
 /////////
-function review_getPosts($gameID, $pageno) {
+function review_getPosts($gameID, $pageno, $censored) {
 	global $db;
 	
 	$query = "select name from Games where appid='{$gameID}' limit 1;";
@@ -600,8 +599,17 @@ function review_getPosts($gameID, $pageno) {
 	}
 	$pageMessages = $sqlResponse->num_rows;
 	$messages = array();
+	
+	if($censored){
+		$profs = file_get_contents('profanityList.txt', true);
+		$profList = explode(",",$profs);
+	}
+	
 	while($row = $sqlResponse->fetch_assoc()){
-		$messages[] = array('username'=>$row['username'], 'userid'=>$row['userid'], 'postTime'=>$row['postTime'], 'message'=>$row['message'], 'positive'=>$row['isPositive']);
+		$msg = $row['message'];
+		if($censored)
+			$msg = str_ireplace($profList, "****", $msg);
+		$messages[] = array('username'=>$row['username'], 'userid'=>$row['userid'], 'postTime'=>$row['postTime'], 'message'=>$msg, 'positive'=>$row['isPositive']);
 	}
 	
 	$response = array('game'=>$gname,'totalMessages'=>$messageCount,'pageMessages'=>$pageMessages,'messages'=>$messages);
@@ -625,7 +633,7 @@ function review_writePost($gameID, $userID, $message, $isPositive){
 	return true;
 }
 /////////
-function forum_getPosts($gameID, $pageno) {
+function forum_getPosts($gameID, $pageno, $censored) {
 	global $db;
 	
 	$query = "select name from Games where appid='{$gameID}' limit 1;";
@@ -673,11 +681,23 @@ function forum_getPosts($gameID, $pageno) {
 	}
 	$pageMessages = $sqlResponse->num_rows;
 	$messages = array();
-	while($row = $sqlResponse->fetch_assoc()){
-		$messages[] = array('username'=>$row['username'], 'userid'=>$row['userid'], 'postTime'=>$row['postTime'], 'message'=>$row['message']);
+	
+	if($censored){
+		$profs = file_get_contents('profanityList.txt', true);
+		$profList = explode(",",$profs);
 	}
 	
+	echo "Pre row sqlresponse while loop".PHP_EOL;
+	while($row = $sqlResponse->fetch_assoc()){
+		$msg = $row['message'];
+		if($censored)
+			$msg = str_ireplace($profList, "****", $msg);
+		$messages[] = array('username'=>$row['username'], 'userid'=>$row['userid'], 'postTime'=>$row['postTime'], 'message'=>$msg);
+	}
+	
+	echo "assemble array of response".PHP_EOL;
 	$response = array('game'=>$gname,'totalMessages'=>$messageCount,'pageMessages'=>$pageMessages,'messages'=>$messages);
+	echo "send response".PHP_EOL;
 	return $response;
 }
 /////////
@@ -730,14 +750,15 @@ function requestProcessor($request)
     case "user_get_games":
     	return getUserGameList($request['userID'], 25);
     case "forum_get_posts":
-    	return forum_getPosts($request['gameID'],$request['page']);
+    	return forum_getPosts($request['gameID'],$request['page'],$request['censor']);
     case "forum_add_post":
     	return forum_writePost($request['gameID'], $request['userID'], $request['message'], $request['sendTime']);
     case "review_get_posts":
-    	return review_getPosts($request['gameID'],$request['page']);
+    	return review_getPosts($request['gameID'],$request['page'],$request['censor']);
     case "review_add_post":
     	return review_writePost($request['gameID'], $request['userID'], $request['message'], $request['positive']);
   }
+  echo "return_processor: sending request back".PHP_EOL;
   return array("returnCode" => '0', 'message'=>"Server received request and processed");
 }
 

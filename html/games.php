@@ -36,7 +36,6 @@
 	<!--===============================================================================================-->
 </head>
 
-
 <body onload="loadstuff()">
 	
 	<script><?php session_start(); ?></script>
@@ -137,15 +136,8 @@
 					<span class="login100-form-title p-b-53">
 		
             <h2><?php echo $game['gname']; ?></h2>
-            <p><?php echo '<a href="forum.php?gid=', urlencode($game['gid']), '">Forum</a>        <a href="review.php?gid=', urlencode($game['gid']), '">Reviews</a>'; ?></p>
-					</span>
-			</div>
-		</div>
-		</div>
-		
-		
-		
-		</div>
+            <p><?php echo '<a href="forum.php?gid=', urlencode($game['gid']), '&censor=false">Forum</a>        <a href="review.php?gid=', urlencode($game['gid']), '&censor=false">Reviews</a>'; ?></p>
+        </div>
 		<?php }} ?>
     </body>
 </html>
