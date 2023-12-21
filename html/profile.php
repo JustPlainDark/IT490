@@ -38,7 +38,7 @@
 <body onload="getuserinfo()">
 <script> <?php session_start(); ?> </script>
 
-	<nav class="navigationbar">
+<nav class="navigationbar fixed-top">
 		<ul class="nav-menu">
 			<li class="nav-item">
 				<a href="index.html" class="nav-link">Welcome</a>
@@ -50,7 +50,10 @@
 				<a href="profile.php" class="nav-link">Steam Profile</a>
 			</li>
 			<li class="nav-item">
-				<a href="news.php" class="nav-link">Game News</a>
+				<a href="news.php" class="nav-link">News</a>
+			</li>
+            <li class="nav-item">
+				<a href="games.php" class="nav-link">Games</a>
 			</li>
 		</ul>
 		<div class="logout">

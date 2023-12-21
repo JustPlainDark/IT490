@@ -52,7 +52,7 @@
 				<a href="profile.php" class="nav-link">Steam Profile</a>
 			</li>
 			<li class="nav-item">
-				<a href="news.php" class="nav-link">Game News</a>
+				<a href="news.php" class="nav-link">News</a>
 			</li>
             <li class="nav-item">
 				<a href="games.php" class="nav-link">Games</a>
@@ -102,7 +102,7 @@
             <script>
             	function loadstuff(){
             	<?php
-            			require_once('../src/include/loginbase.inc'); 
+            			require_once('src/include/loginbase.inc'); 
 
                         $client = new rabbitMQClient("testRabbitMQ.ini","databaseServer"); 
                         if (isset($_POST['sendMessage']) && isset($_POST['message']) && isset($_SESSION['uid'])) {
@@ -134,8 +134,14 @@
                         $postR = $client->send_request($request);
                         $censor = false;
                         if(isset($_GET['censor']) && $_GET['censor'] == 'true')
-                        	$censor = true;
-                        header ("Refresh:0");
+						{
+							$censor = true;
+						}
+						echo 'if(confirm("Post sent succesfully!")){document.location.href="games.php"};';
+                     //   header ("Refresh:0");
+						header("games.php"); 
+						//header("profile.php"); 
+
                     } else {
                     if(isset($_GET['gid'])) {
 	                        $gameId = $_GET['gid'];
@@ -241,7 +247,7 @@
 
                 <?php foreach($getR['messages'] as $message) { ?>
 
-                <div class="userinfo">      
+                <div class="limiter">      
 
                     <h4> <?php echo $message['username']; ?> said at <?php echo $message['postTime']; ?>:</h4>
                     <p><?php echo $message['message']; ?></p>
@@ -252,11 +258,23 @@
                 <?php if(!isset($_SESSION['uid'])) { ?>
                 	<h2>(You must be logged in to make a post.)</h2>
                 <?php } else { ?>
-                	<form id="messageForm" method="POST" action="">
+                	
+					<form id="messageForm" method="POST" action="">
                 		<textarea id="messageField" name="message" form="messageForm" placeholder="Say something about this game! Just remember to be respectful." rows="5" cols="25" maxlength="400" required></textarea>
-                		<input type="submit" name="sendMessage" value="Say it!">
+                		<!--<input type="submit" name="sendMessage" value="Say it!">-->
+
+						<button class="login100-form-btn" style="padding: 0px;">
+                                <input type="submit" name="sendMessage" value="Enter" style="background-color: transparent; width: 100%; height: 100%;">
+								
+							</button> 
                 	</form>
+
+
                 <?php } }?>
+
+			</div>
+		</div>
+</div>
 
     </body>
 </html>

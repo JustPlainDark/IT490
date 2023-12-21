@@ -39,8 +39,7 @@
 <body onload="loadstuff()">
 	
 	<script><?php session_start(); ?></script>
-	
-    
+
 	<nav class="navigationbar fixed-top">
 		<ul class="nav-menu">
 			<li class="nav-item">
@@ -53,7 +52,10 @@
 				<a href="profile.php" class="nav-link">Steam Profile</a>
 			</li>
 			<li class="nav-item">
-				<a href="news.php" class="nav-link">Game News</a>
+				<a href="news.php" class="nav-link">News</a>
+			</li>
+            <li class="nav-item">
+				<a href="games.php" class="nav-link">Games</a>
 			</li>
 		</ul>
 		<div class="logout">
@@ -92,7 +94,7 @@
 
 
 <div class="limiter">
-		<div class="container-login100" style="background-image: url('Login_v5/images/bg-01.jpg');">
+		<div class="container-login100" style="background-image: url('Login_v5/images/bg-01.jpg');  padding-top: 10%;">
 			<div class="wrap-login100 p-l-110 p-r-110 p-t-62 p-b-33">
 					<span class="login100-form-title p-b-53">
 						Games
@@ -131,9 +133,6 @@
         <?php foreach($games as $game) { ?>
     <!--    <div class = "newsbox"> -->
 		<div class="limiter">
-		<div class="container-login100" style="background-image: url('Login_v5/images/bg-01.jpg');">
-			<div class="wrap-login100 p-l-110 p-r-110 p-t-62 p-b-33">
-					<span class="login100-form-title p-b-53">
 		
             <h2><?php echo $game['gname']; ?></h2>
             <p><?php echo '<a href="forum.php?gid=', urlencode($game['gid']), '&censor=false">Forum</a>        <a href="review.php?gid=', urlencode($game['gid']), '&censor=false">Reviews</a>'; ?></p>

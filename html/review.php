@@ -40,6 +40,7 @@
 	
 	<script><?php session_start(); ?></script>
 
+
 	<nav class="navigationbar fixed-top">
 		<ul class="nav-menu">
 			<li class="nav-item">
@@ -52,7 +53,10 @@
 				<a href="profile.php" class="nav-link">Steam Profile</a>
 			</li>
 			<li class="nav-item">
-				<a href="news.php" class="nav-link">Game News</a>
+				<a href="news.php" class="nav-link">News</a>
+			</li>
+            <li class="nav-item">
+				<a href="games.php" class="nav-link">Games</a>
 			</li>
 		</ul>
 		<div class="logout">
@@ -138,8 +142,13 @@
                         $censor = false;
                         if(isset($_GET['censor']) && $_GET['censor'] == 'true')
                         	$censor = true;
-                 //      header("review.php?gid=".$gameId."&censor=".$censor ? "true" : "false"); 
-                        header("Refresh:0");
+						
+						echo 'if(confirm("Post sent succesfully!")){document.location.href="games.php"};';
+						header("games.php"); 
+						//header("profile.php"); 
+
+						//header("review.php?gid=".$gameId."&censor=".$censor ? "true" : "false"); 
+                   		//header("Refresh:0");
                     } else {
 
                     if(isset($_GET['gid'])) {

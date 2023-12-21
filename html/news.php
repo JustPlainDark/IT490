@@ -52,7 +52,10 @@
 				<a href="profile.php" class="nav-link">Steam Profile</a>
 			</li>
 			<li class="nav-item">
-				<a href="news.php" class="nav-link">Game News</a>
+				<a href="news.php" class="nav-link">News</a>
+			</li>
+            <li class="nav-item">
+				<a href="games.php" class="nav-link">Games</a>
 			</li>
 		</ul>
 		<div class="logout">
@@ -108,7 +111,7 @@
 
 
 	<div class="limiter">
-		<div class="container-login100" style="background-image: url('Login_v5/images/bg-01.jpg');">
+		<div class="container-login100" style="background-image: url('Login_v5/images/bg-01.jpg'); padding-top: 5%;">
 			<div class="wrap-login100 p-l-110 p-r-110 p-t-62 p-b-33">
 					<span class="login100-form-title p-b-53">
 						Game News
