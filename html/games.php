@@ -2,7 +2,7 @@
     <head>
         <title> Forum </title>
         <!-- link to css stylesheet, has all the formatting--> 
-		<link rel="stylesheet" href="../css/news.css">
+		<link rel="stylesheet" href="css/news.css">
 	
     </head>
 
@@ -59,7 +59,7 @@
         <?php foreach($games as $game) { ?>
         <div class = "newsbox">
             <h2><?php echo $game['gname']; ?></h2>
-            <p><?php echo '<a href="forum.php?gid=', urlencode($game['gid']), '">Forum</a>        <a href="review.php?gid=', urlencode($game['gid']), '">Reviews</a>'; ?></p>
+            <p><?php echo '<a href="forum.php?gid=', urlencode($game['gid']), '&censor=false">Forum</a>        <a href="review.php?gid=', urlencode($game['gid']), '&censor=false">Reviews</a>'; ?></p>
         </div>
 		<?php }} ?>
     </body>
